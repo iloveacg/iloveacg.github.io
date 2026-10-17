@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>i love ACG</title>
+  <style>
+    :root {
+      /* 极简留白视觉系统 */
+      --color-canvas: #ffffff;
+      --color-ink: #111111;
+      --color-ink-soft: #555555;
+      --color-ink-faint: #999999;
+      --color-line: #111111;
+      --color-line-soft: #d9d9d9;
+      --color-accent: #a78bfa;   /* 唯一高亮色：淡紫 */
+      --color-focus: #000000;
+
+      --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+      --space-page: clamp(1rem, 4vw, 2.5rem);
+      --space-stack: clamp(1.25rem, 3vw, 2rem);
+      --border-w: 1.5px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--color-canvas);
+      color: var(--color-ink);
+      font-family: var(--font-body);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page {
+      max-width: 60rem; margin: 0 auto; padding: var(--space-page);
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+    .page main { flex: 1 1 auto; }
+    a { color: inherit; }
+    a:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+
+    /* ---------- 顶部导航 ---------- */
+    .topbar {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap;
+      border-bottom: var(--border-w) solid var(--color-line);
+      padding-bottom: 0.8rem;
+    }
+    .brand { line-height: 1.1; }
+    .brand .i { font-size: 0.95rem; letter-spacing: 0.05em; }
+    .brand .logo h1 { margin: 0; font-size: 1.9rem; font-weight: 800; letter-spacing: 0.02em; }
+    .brand .url { font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-ink-faint); margin-top: 0.1rem; }
+    .nav { display: flex; gap: 1rem; font-size: 1rem; margin-top: 0.3rem; }
+    .nav a { text-decoration: none; color: var(--color-ink-soft); }
+    .nav a.current { color: var(--color-accent); font-weight: 700; }
+
+    /* ---------- 番剧列表 ---------- */
+    main { margin-top: var(--space-stack); }
+    .list-head { font-size: 0.9rem; font-weight: 700; margin: 0 0 0.5rem; }
+    .vlist { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--color-line-soft); }
+    .vlist li { border-bottom: 1px dashed var(--color-line-soft); }
+    .vlist a {
+      display: block; padding: 0.55rem 0.4rem;
+      text-decoration: none; color: var(--color-ink);
+      font-size: 0.95rem; overflow-wrap: anywhere;
+    }
+    .vlist a:hover { background: #fafafa; color: var(--color-accent); }
+    .vlist a .tag { color: var(--color-ink-faint); }
+    .vlist .empty { color: var(--color-ink-faint); font-size: 0.85rem; padding: 0.8rem 0.4rem; font-family: var(--font-mono); display: block; }
+
+    /* ---------- 底部信息区（始终在页面底部） ---------- */
+    .foot {
+      margin-top: auto;
+      padding-top: 0.8rem;
+      border-top: var(--border-w) solid var(--color-line);
+      display: flex; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap;
+      font-size: 0.82rem; color: var(--color-ink-soft);
+    }
+    .foot .reveal { font-family: var(--font-mono); font-size: 0.9rem; color: var(--color-ink-soft); }
+    .foot a { color: var(--color-ink); text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ---------- 加载动画（GitHub 远、反应慢，始终显示加载状态） ---------- */
+    .loading {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.9rem 0.4rem;
+      color: var(--color-ink-faint); font-family: var(--font-mono); font-size: 0.85rem;
+    }
+    .spinner {
+      width: 16px; height: 16px; flex: 0 0 auto;
+      border: 2px solid var(--color-line-soft);
+      border-top-color: var(--color-accent);
+      border-radius: 50%;
+      animation: spin 0.85s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media print { body { background: #fff; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- 顶部导航 -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="i">i love</div>
+        <div class="logo"><h1>ACG</h1></div>
+        <div class="url">https://iloveacg.github.io</div>
+      </div>
+      <nav class="nav" aria-label="主导航">
+        <a class="current" href="#vlist" aria-current="page">首页</a>
+      </nav>
+    </header>
+
+    <main>
+      <h2 class="list-head" id="list-heading">番剧</h2>
+      <ul class="vlist" id="vlist" aria-live="polite">
+        <li class="loading"><span class="spinner" aria-hidden="true"></span>正在加载番剧列表…</li>
+      </ul>
+    </main>
+
+    <!-- 底部信息 -->
+    <footer class="foot">
+      <span class="reveal">i love ACG - 认真你就输了……</span>
+      <span>网站更新于 2026/10/16 by: ch3oh</span>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      // 视频直接从仓库根目录抓取（视频与 index.html 放在一起），点击跳转到播放页 player.html?v=文件名
+      // 站点部署在 GitHub Pages（https://iloveacg.github.io），通过 GitHub Contents API 实时列出根目录视频
+      var REPO = "iloveacg/iloveacg.github.io";
+      var BRANCH = "main";
+      var VIDEO_EXTS = { ".mp4": 1, ".webm": 1, ".ogg": 1, ".mov": 1, ".m4v": 1 };
+
+      var listEl = document.getElementById("vlist");
+      var RETRY_MS = 6000; // GitHub 服务器较远，加载慢，失败后持续重试，动画保持转
+
+      function isVideo(name) {
+        var dot = name.lastIndexOf(".");
+        if (dot < 0) return false;
+        return !!VIDEO_EXTS[name.slice(dot).toLowerCase()];
+      }
+      function stripExt(name) { return name.replace(/\.(mp4|webm|ogg|mov|m4v)$/i, ""); }
+
+      function buildList(arr) {
+        var items = arr
+          .filter(function (f) { return f.type === "file" && isVideo(f.name); })
+          .sort(function (a, b) { return a.name.localeCompare(b.name); });
+        listEl.innerHTML = "";
+        if (items.length === 0) {
+          var li0 = document.createElement("li");
+          li0.innerHTML = '<span class="empty">仓库暂无视频，将视频放入仓库根目录即会自动显示。</span>';
+          listEl.appendChild(li0);
+          return;
+        }
+        items.forEach(function (it) {
+          var li = document.createElement("li");
+          var a = document.createElement("a");
+          a.href = "player.html?v=" + encodeURIComponent(it.name);
+          a.innerHTML = '<span class="tag">[番剧:</span>' + stripExt(it.name) + "<span class='tag'>]</span>";
+          li.appendChild(a);
+          listEl.appendChild(li);
+        });
+      }
+
+      // 页内锚点平滑滚动
+      document.addEventListener("click", function (e) {
+        var a = e.target.closest && e.target.closest("a[href^='#']");
+        if (!a) return;
+        var id = a.getAttribute("href").slice(1);
+        var target = id && document.getElementById(id);
+        if (target) { e.preventDefault(); target.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      });
+
+      function load() {
+        var api = "https://api.github.com/repos/" + REPO + "/contents/?ref=" + BRANCH;
+        fetch(new Request(api))
+          .then(function (res) { if (!res.ok) throw new Error("http " + res.status); return res.json(); })
+          .then(function (arr) {
+            if (!Array.isArray(arr)) throw new Error("bad");
+            buildList(arr); // 成功：替换 loading 为真实列表
+          })
+          .catch(function () {
+            // 保持持续加载动画，不报错，稍后自动重试（GitHub 反应慢）
+            setTimeout(load, RETRY_MS);
+          });
+      }
+      load();
+    })();
+  </script>
+</body>
+</html>
